@@ -4,5 +4,5 @@ import "fmt"
 import "./config"
 
 func main() {
-    fmt.Println(config.FindConfigFile())
+	fmt.Println(config.FindConfigFile())
 }

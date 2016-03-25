@@ -5,17 +5,18 @@ package config
 //import "strings"
 import "runtime"
 
-// Enumeration describing the instance type, cen be either master, slave 
+// Enumeration describing the instance type, cen be either master, slave
 // or servant (both)
 type InstanceType int
+
 const (
-    Master InstanceType = iota
-    Slave
-    Servant
+	Master InstanceType = iota
+	Slave
+	Servant
 )
 
 // Structure describing the godo instance configuration
-// 
+//
 // Name : instance name
 // Type : instance type
 // Os : os of the instance
@@ -24,22 +25,22 @@ const (
 // Web : boolean, tells if the instance has its web interface enabled
 // WebPort : port for the web interface
 type Config struct {
-    Name    string
-    Type    InstanceType
-    Os      string
-    Port    string
-    Tags    []string
-    Web     bool
-    WebPort string
+	Name    string
+	Type    InstanceType
+	Os      string
+	Port    string
+	Tags    []string
+	Web     bool
+	WebPort string
 }
 
 // Look for the configuration file from multiple possible locations
 // returns the full path to the first configuration file found
 func FindConfigFile() string {
-    return ""
+	return ""
 }
 
-// Read configuration from a config file 
+// Read configuration from a config file
 func (config Config) FromConfigFile() {
 
 }
@@ -51,13 +52,12 @@ func (config Config) FromArgs() {
 
 // Constructor for the config struct
 func newConfig() *Config {
-    c := new(Config)
-    c.Type = Master
-    c.Os = runtime.GOOS
-    c.Port = "8008"
-    c.Tags = make([]string, 0)
-    c.Web = false
-    c.WebPort = "8888"
-    return c
+	c := new(Config)
+	c.Type = Master
+	c.Os = runtime.GOOS
+	c.Port = "8008"
+	c.Tags = make([]string, 0)
+	c.Web = false
+	c.WebPort = "8888"
+	return c
 }
-
