@@ -110,4 +110,5 @@ and
 
 ## TODO
 
-- Replace the Json files by something more readable and less verbose, something like TOML would be nice
+- Use flag package to parse [options], the rest I should probablu handle manually
+- Use TOML

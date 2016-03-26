@@ -14,8 +14,8 @@ func main() {
 		PrintUsage()
 		os.Exit(1)
 	case len(args) > 0:
-		if fun, ok := Controls[strings.ToLower(args[0])]; ok {
-			fun()
+		if fun, ok := Options[strings.ToLower(args[0])]; ok {
+			fun(args)
 		} else {
 			PrintUsage()
 		}
