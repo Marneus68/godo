@@ -1,10 +1,10 @@
-package control
+package main
 
 import (
 	"fmt"
 )
 
-var Map = map[string]func(){
+var Controls = map[string]func(){
 	"create":  func() { fmt.Println("create") },
 	"config":  func() { fmt.Println("config") },
 	"start":   func() { fmt.Println("start") },

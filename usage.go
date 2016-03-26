@@ -1,10 +1,10 @@
-package usage
+package main
 
 import (
 	"fmt"
 	//"./control"
 )
 
-func Print() {
+func PrintUsage() {
 	fmt.Println("Usage")
 }
