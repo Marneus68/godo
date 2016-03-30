@@ -15,7 +15,12 @@ func main() {
 		fmt.Print("usage\n")
 		os.Exit(1)
 	case len(args) > 0:
-		control.Map[strings.ToLower(args[0])](args)
+		if fun, ok := control.Map[strings.ToLower(args[0])]; ok {
+			fun()
+		} else {
+			fmt.Println("usage")
+		}
+		//control.Map[strings.ToLower(args[0])](args)
 		/*
 		   switch strings.ToLower(args[0]) {
 		   case "create":
