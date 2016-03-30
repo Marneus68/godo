@@ -1,8 +1,10 @@
+# THIS PROJECT IS IN ITS EARLY STAGES
+
+## This readme is just a design documentation for now
+
 # godo
 
-Simple job remoting tool 
-
-alternative to buildbot
+Simple job remoting tool meant as an alternative to buildbot.
 
 ## Name
 
