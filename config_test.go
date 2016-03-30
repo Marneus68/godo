@@ -3,7 +3,7 @@ package main
 import (
 	//"fmt"
 	//"strconv"
-	"godo/config"
+	"github.com/Marneus68/godo/config"
 	"testing"
 )
 
