@@ -119,3 +119,17 @@ func NewConfig() *Config {
 	c.Slaves = make([]string, 0)
 	return c
 }
+
+// Prints a human readable rundown of the configuration
+func (config Config) ToString() string {
+	ret := ""
+	switch config.Type {
+	case Master:
+		ret = fmt.Sprintf(
+			"[master godo instance]\nName : %s\nOS : %s", config.Name, config.Os)
+
+	case Servant:
+	case Slave:
+	}
+	return ret
+}
