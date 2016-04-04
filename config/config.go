@@ -126,11 +126,11 @@ func (config Config) ToString() string {
 	ret := ""
 	switch config.Type {
 	case Master:
-		ret = fmt.Sprintf(
-			"[master godo instance]\nName : %s", config.Name)
-
+		ret = fmt.Sprintf("[MASTER]")
 	case Servant:
+		ret = fmt.Sprintf("[SERVANT]")
 	case Slave:
+		ret = fmt.Sprintf("[SLAVE]")
 	}
 	return ret
 }
