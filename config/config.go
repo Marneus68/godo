@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 	"os/user"
-	"runtime"
+	//"runtime"
 	"strings"
 )
 
@@ -31,7 +31,6 @@ const (
 type Config struct {
 	Name    string
 	Type    InstanceType
-	Os      string
 	Port    string
 	Tags    []string
 	Web     bool
@@ -111,12 +110,14 @@ func NewConfig() *Config {
 		c.Name = ""
 	}
 	c.Type = Master
-	c.Os = runtime.GOOS
 	c.Port = "8008"
 	c.Tags = make([]string, 0)
 	c.Web = false
 	c.WebPort = "8888"
 	c.Slaves = make([]string, 0)
+
+	// TODO: I should add the current os (runtime.GOOS to the list of tags for
+	// the instance
 	return c
 }
 
@@ -126,7 +127,7 @@ func (config Config) ToString() string {
 	switch config.Type {
 	case Master:
 		ret = fmt.Sprintf(
-			"[master godo instance]\nName : %s\nOS : %s", config.Name, config.Os)
+			"[master godo instance]\nName : %s", config.Name)
 
 	case Servant:
 	case Slave:

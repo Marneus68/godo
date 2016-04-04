@@ -1,8 +1,6 @@
 package main
 
 import (
-	//"./control"
-	//"./usage"
 	"os"
 	"strings"
 )
@@ -16,6 +14,7 @@ func main() {
 	case len(args) > 0:
 		if fun, ok := Options[strings.ToLower(args[0])]; ok {
 			fun(args)
+
 		} else {
 			PrintUsage()
 		}
