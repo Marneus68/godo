@@ -103,13 +103,14 @@ var Options = map[string]OptionsFunc{
 						if *defWebPort != "" {
 							c.WebPort = *defWebPort
 						}
-					} else {
-						fmt.Println("No parameters provided...")
-						fmt.Println("Attempting to open config file with standard text editor")
-						os.Exit(1)
 					}
+				} else {
+					fmt.Println("No parameters provided...")
+					fmt.Println("Attempting to open config file with standard text editor...")
+					os.Exit(1)
 				}
 			default:
+				FlagError()
 			}
 			fmt.Println(c.ToString())
 		default:
