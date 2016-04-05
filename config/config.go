@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"reflect"
 	"runtime"
 	"strings"
 )
@@ -133,7 +134,31 @@ func MergeConfig(new Config, old Config) Config {
 // Apply the configuration of the new config instance only if the new values
 // aren't equal to the default values
 func (config Config) MergeConfig(new Config) Config {
-	// TODO: implement the configuration merging
+	if new.Name != DEFAULT_NAME {
+		config.Name = new.Name
+	}
+	if new.Type != DEFAULT_TYPE {
+		config.Type = new.Type
+	}
+	if new.Port != DEFAULT_PORT {
+		config.Port = new.Port
+	}
+	if config.Type == Master {
+		if reflect.DeepEqual(new.Tags, DEFAULT_TAGS) {
+			config.Tags = new.Tags
+		}
+	}
+	if new.Web != DEFAULT_WEB {
+		config.Web = new.Web
+	}
+	if new.WebPort != DEFAULT_PORT {
+
+	}
+	if config.Type == Slave || config.Type == Servant {
+		if reflect.DeepEqual(new.Slaves, DEFAULT_SLAVES) {
+			config.Slaves = new.Slaves
+		}
+	}
 	return config
 }
 
@@ -147,10 +172,6 @@ func NewConfig() *Config {
 	c.Web = DEFAULT_WEB
 	c.WebPort = DEFAULT_PORT
 	c.Slaves = DEFAULT_SLAVES
-
-	// TODO: I should add the current os (runtime.GOOS to the list of tags for
-	// the instance
-	// TODO: Default new instance should be hostname too (os.Hostname())
 	return c
 }
 
