@@ -152,7 +152,7 @@ func (config Config) MergeConfig(new Config) Config {
 		config.Web = new.Web
 	}
 	if new.WebPort != DEFAULT_PORT {
-
+		config.WebPort = new.WebPort
 	}
 	if config.Type == Slave || config.Type == Servant {
 		if reflect.DeepEqual(new.Slaves, DEFAULT_SLAVES) {
@@ -170,7 +170,7 @@ func NewConfig() *Config {
 	c.Port = DEFAULT_PORT
 	c.Tags = DEFAULT_TAGS
 	c.Web = DEFAULT_WEB
-	c.WebPort = DEFAULT_PORT
+	c.WebPort = DEFAULT_WEB_PORT
 	c.Slaves = DEFAULT_SLAVES
 	return c
 }
