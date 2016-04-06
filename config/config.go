@@ -20,6 +20,16 @@ const (
 	Servant
 )
 
+// Enumeration describing the way slaves or servants are selected to submit a job
+type SlaveSelectMode int
+
+const (
+	// Round robin between all slaves
+	RoundRobin SlaveSelectMode = iota
+	// Round robin between all slaves and the current instance itself if it's a servant
+	RoundRobinSelf
+)
+
 // Default tupe
 const DEFAULT_TYPE InstanceType = Master
 
@@ -55,9 +65,11 @@ func init() {
 // Name : instance name
 // Type : instance type
 // Port : port godo listens on if it's either a slave or a servant
-// Tags : job tags accepted by this instance if it's either a slave or servant
+// Tags : job tags accepted by this instance (ONLY APPLICABLE FOR SERVANT OR SLAVE INSTANCES)
 // Web : boolean, tells if the instance has its web interface enabled
 // WebPort : port for the web interface
+// Slaves : list of slaves known to the instance (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
+// SlaveSelectMode : Algorithm used to determine the slave or servant to run the job (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
 type Config struct {
 	Name    string
 	Type    InstanceType
