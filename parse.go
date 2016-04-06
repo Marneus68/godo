@@ -30,7 +30,7 @@ func SetStandardFlags() {
 	defPort = f.String("port", "", "Port used for communication")
 	defWeb = f.Bool("web", false, "Enables the web interface")
 	defWebPort = f.String("webport", "", "Port of the web interface")
-	defTags = f.String("tags", "", "Comma separated list of flags")
+	defTags = f.String("tags", "", "Comma separated list of tags")
 }
 
 // Defines the possible flags for the Job control mode
@@ -88,7 +88,7 @@ var Options = map[string]OptionsFunc{
 			switch strings.ToLower(args[1]) {
 			case "edit":
 				if len(args) > 2 {
-					if err := f.Parse(args[3:]); err != nil {
+					if err := f.Parse(args[2:]); err != nil {
 						log.Fatal("Error while parsing command line parameters")
 					}
 					if f.Parsed() {
@@ -103,11 +103,11 @@ var Options = map[string]OptionsFunc{
 						if *defWebPort != "" {
 							c.WebPort = *defWebPort
 						}
-					} else {
-						fmt.Println("No parameters provided...")
-						fmt.Println("Attempting to open config file with standard text editor")
-						os.Exit(1)
 					}
+				} else {
+					fmt.Println("No parameters provided...")
+					fmt.Println("Attempting to open config file with standard text editor")
+					os.Exit(1)
 				}
 			default:
 			}

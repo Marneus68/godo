@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 	"os/user"
-	//"runtime"
+	"runtime"
 	"strings"
 )
 
@@ -19,11 +19,40 @@ const (
 	Servant
 )
 
+// Default tupe
+const DEFAULT_TYPE InstanceType = Master
+
+// Default name
+var DEFAULT_NAME string = ""
+
+// Default port
+const DEFAULT_PORT string = "8008"
+
+// Default tags
+var DEFAULT_TAGS []string
+
+// Default web interface configuration
+const DEFAULT_WEB bool = false
+
+// Default web interface port
+const DEFAULT_WEB_PORT string = "8888"
+
+// Default slaves for master and servant instances
+var DEFAULT_SLAVES []string
+
+func init() {
+	name, err := os.Hostname()
+	if err != nil {
+		DEFAULT_NAME = name
+	}
+	DEFAULT_TAGS = []string{runtime.GOOS}
+	DEFAULT_SLAVES = []string{}
+}
+
 // Structure describing the godo instance configuration
 //
 // Name : instance name
 // Type : instance type
-// Os : os of the instance
 // Port : port godo listens on if it's either a slave or a servant
 // Tags : job tags accepted by this instance if it's either a slave or servant
 // Web : boolean, tells if the instance has its web interface enabled
@@ -95,29 +124,33 @@ func (config Config) FromConfigFile() {
 
 }
 
-// Read configuration from a command line parameters
-func (config Config) FromArgs() {
+// Apply the configuration of the new config instance to the old one only if
+// the new values aren't equal to the default values
+func MergeConfig(new Config, old Config) Config {
+	return old.MergeConfig(new)
+}
 
+// Apply the configuration of the new config instance only if the new values
+// aren't equal to the default values
+func (config Config) MergeConfig(new Config) Config {
+	// TODO: implement the configuration merging
+	return config
 }
 
 // Constructor for the config struct
 func NewConfig() *Config {
 	c := new(Config)
-	name, err := os.Hostname()
-	if err == nil {
-		c.Name = name
-	} else {
-		c.Name = ""
-	}
-	c.Type = Master
-	c.Port = "8008"
-	c.Tags = make([]string, 0)
-	c.Web = false
-	c.WebPort = "8888"
-	c.Slaves = make([]string, 0)
+	c.Name = DEFAULT_NAME
+	c.Type = DEFAULT_TYPE
+	c.Port = DEFAULT_PORT
+	c.Tags = DEFAULT_TAGS
+	c.Web = DEFAULT_WEB
+	c.WebPort = DEFAULT_PORT
+	c.Slaves = DEFAULT_SLAVES
 
 	// TODO: I should add the current os (runtime.GOOS to the list of tags for
 	// the instance
+	// TODO: Default new instance should be hostname too (os.Hostname())
 	return c
 }
 
