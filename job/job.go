@@ -3,12 +3,10 @@ package job
 // Structure describing a godo job
 //
 // Name : name of the job
-// Os : target OS for the job
 // Tags : job tags expected by this job to be run by a slave or servant instance
 // Command : command executed by the job
 type Job struct {
 	Name    string
-	Os      string
 	Tags    []string
 	Command string
 }
@@ -17,7 +15,6 @@ type Job struct {
 func NewJob() *Job {
 	j := new(Job)
 	j.Name = ""
-	j.Os = ""
 	j.Tags = make([]string, 0)
 	j.Command = ""
 	return j
@@ -27,13 +24,17 @@ func NewJob() *Job {
 func NewJobFromFile(path string) *Job {
 	j := new(Job)
 	j.Name = ""
-	j.Os = ""
 	j.Tags = make([]string, 0)
 	j.Command = ""
 	return j
 }
 
-// Save the job to a file
+// Read job from file
+func (job Job) ReadFromFile(path string) {
+
+}
+
+// Save job to file
 func (job Job) SaveToFile(path string) {
 
 }

@@ -27,7 +27,7 @@ const (
 	// Round robin between all slaves
 	RoundRobin SlaveSelectMode = iota
 	// Round robin between all slaves and the current instance itself if it's a servant
-	RoundRobinSelf
+	RoundRobinIncSelf
 )
 
 // Default tupe
@@ -132,8 +132,13 @@ func JobDirectory() string {
 	return ""
 }
 
-// Read configuration from a config file
-func (config Config) FromConfigFile() {
+// Read configuration from file
+func (config Config) ReadFromFile(path string) {
+
+}
+
+// Save configuration to file
+func (config Config) SaveToFile(path string) {
 
 }
 
