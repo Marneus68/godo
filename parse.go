@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	"github.com/Marneus68/godo/runner"
 	"log"
 	"os"
 	"strings"
@@ -119,6 +120,8 @@ var Options = map[string]OptionsFunc{
 	},
 	"start": func(args []string) {
 		fmt.Println("start")
+		c := config.NewConfig()
+		runner.Start(*c)
 	},
 	"restart": func(args []string) {
 		fmt.Println("restart")

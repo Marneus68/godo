@@ -20,13 +20,15 @@ const (
 	Servant
 )
 
-// Enumeration describing the way slaves or servants are selected to submit a job
+// Enumeration describing the way slaves or servants are selected to submit a
+// job
 type SlaveSelectMode int
 
 const (
 	// Round robin between all slaves
 	RoundRobin SlaveSelectMode = iota
-	// Round robin between all slaves and the current instance itself if it's a servant
+	// Round robin between all slaves and the current instance itself if it's a
+	// servant
 	RoundRobinIncSelf
 )
 
@@ -109,7 +111,7 @@ func ConfigFile() string {
 		if path[:2] == "~/" {
 			path = strings.Replace(path, "~/", homeDir, 1)
 		}
-
+		ConfigDirectory
 		fmt.Printf("Checking for file \"%s\"\n", path)
 		_, err := os.Stat(path)
 		if err == nil {
@@ -123,6 +125,11 @@ func ConfigFile() string {
 		log.Fatal("Could not find configuration file.")
 	}
 	return configFile
+}
+
+//
+func ConfigDirectory() string {
+	return ConfigFile()[:9]
 }
 
 // Looks for the jobs directory
