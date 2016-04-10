@@ -2,9 +2,8 @@ package config
 
 import (
 	"fmt"
-	"log"
+	"github.com/Marneus68/godo/utils"
 	"os"
-	"os/user"
 	"reflect"
 	"runtime"
 	"strings"
@@ -26,10 +25,10 @@ type SlaveSelectMode int
 
 const (
 	// Round robin between all slaves
-	RoundRobin SlaveSelectMode = iota
+	RR SlaveSelectMode = iota
 	// Round robin between all slaves and the current instance itself if it's a
 	// servant
-	RoundRobinIncSelf
+	RR_W_SELF
 )
 
 // Default tupe
@@ -82,6 +81,18 @@ type Config struct {
 	Slaves  []string
 }
 
+// Default configuration file
+const CONF_FILE_NAME string = "godo.conf"
+
+// Default jobs file
+const JOBS_FILE_NAME string = "jobs"
+
+// Default name of the jobs directory
+const JOBS_DIR_NAME string = "jobs.d"
+
+// Default location of the configuration file and job subdirectories
+const DEFAULT_CONF_LOCATION string = "~/godo/"
+
 var locations = map[string]string{
 	"/godo/godo.conf":                 "/godo/jobs.d",
 	"/etc/godo/godo.conf":             "/etc/godo/jobs.d",
@@ -96,22 +107,9 @@ var jobDirectory = ""
 // Looks for the configuration file from multiple possible locations
 // returns the full absolute path to the first configuration file found
 func ConfigFile() string {
-	u, _ := user.Current()
-	homeDir := u.HomeDir
-
-	if homeDir == "" {
-		log.Fatal("Unable to find the home directory of the current user.")
-	}
-
-	homeDir = fmt.Sprint(homeDir + "/")
-
 	var i = 0
 	for k, _ := range locations {
-		path := k
-		if path[:2] == "~/" {
-			path = strings.Replace(path, "~/", homeDir, 1)
-		}
-		ConfigDirectory
+		path := utils.SubstituteHomeDir(k)
 		fmt.Printf("Checking for file \"%s\"\n", path)
 		_, err := os.Stat(path)
 		if err == nil {
@@ -122,14 +120,16 @@ func ConfigFile() string {
 		i++
 	}
 	if configFile == "" {
-		log.Fatal("Could not find configuration file.")
+		//log.Fatal("Could not find configuration file.")
+		fmt.Println("Could not find a configuration file at any known location...")
+		fmt.Println("Defaulting to\"", DEFAULT_CONF_LOCATION, "\"...")
+		return fmt.Sprint(DEFAULT_CONF_LOCATION, CONF_FILE_NAME)
 	}
 	return configFile
 }
 
-//
 func ConfigDirectory() string {
-	return ConfigFile()[:9]
+	return strings.TrimSuffix(ConfigFile(), CONF_FILE_NAME)
 }
 
 // Looks for the jobs directory
