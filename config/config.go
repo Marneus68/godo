@@ -84,9 +84,6 @@ type Config struct {
 // Default configuration file
 const CONF_FILE_NAME string = "godo.conf"
 
-// Default jobs file
-const JOBS_FILE_NAME string = "jobs"
-
 // Default name of the jobs directory
 const JOBS_DIR_NAME string = "jobs.d"
 
@@ -103,7 +100,6 @@ var locations = []string{
 
 var config string = ""
 var configFile string = ""
-var jobsFile string = ""
 var jobsDirectory string = ""
 
 // Looks for the configuration directory from multiple possible
@@ -139,15 +135,6 @@ func ConfigFile() string {
 	}
 	configFile = filepath.Join(ConfigDirectory(), CONF_FILE_NAME)
 	return configFile
-}
-
-// Returns the absolute path to the local jobs configuration file
-func JobsFile() string {
-	if strings.Compare(jobsFile, "") != 0 {
-		return jobsFile
-	}
-	jobsFile = filepath.Join(ConfigDirectory(), JOBS_FILE_NAME)
-	return jobsFile
 }
 
 // Returns the absolute path to the local jobs directory

@@ -15,7 +15,6 @@ func Start(con config.Config) {
 	//p, err := os.FindProcess(
 	fmt.Println("[CONFIG PATH]", config.ConfigDirectory())
 	fmt.Println("[CONFIG FILE]", config.ConfigFile())
-	fmt.Println("[JOBS FILE NAME]", config.JobsFile())
 	fmt.Println("[JOBS FILE PATH]", config.JobsDirectory())
 	fmt.Println("[PIDFILE]: ", filepath.Join(config.ConfigDirectory(), PIDFILE_NAME))
 	// if the pidfile doesn't exist we create our instance and write it
