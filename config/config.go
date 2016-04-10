@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Marneus68/godo/utils"
 	"os"
+	"path/filepath"
 	"reflect"
 	"runtime"
 	"strings"
@@ -24,11 +25,8 @@ const (
 type SlaveSelectMode int
 
 const (
-	// Round robin between all slaves
-	RR SlaveSelectMode = iota
-	// Round robin between all slaves and the current instance itself if it's a
-	// servant
-	RR_W_SELF
+	RR        SlaveSelectMode = iota // Round robin between all slaves
+	RR_W_SELF                        // Round robin between all slaves and the current instance
 )
 
 // Default tupe
@@ -61,16 +59,18 @@ func init() {
 	DEFAULT_SLAVES = []string{}
 }
 
-// Structure describing the godo instance configuration
-//
-// Name : instance name
-// Type : instance type
-// Port : port godo listens on if it's either a slave or a servant
-// Tags : job tags accepted by this instance (ONLY APPLICABLE FOR SERVANT OR SLAVE INSTANCES)
-// Web : boolean, tells if the instance has its web interface enabled
-// WebPort : port for the web interface
-// Slaves : list of slaves known to the instance (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
-// SlaveSelectMode : Algorithm used to determine the slave or servant to run the job (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
+/*
+Structure describing the godo instance configuration
+
+	Name : instance name
+	Type : instance type
+	Port : port godo listens on if it's either a slave or a servant
+	Tags : job tags accepted by this instance (ONLY APPLICABLE FOR SERVANT OR SLAVE INSTANCES)
+	Web : boolean, tells if the instance has its web interface enabled
+	WebPort : port for the web interface
+	Slaves : list of slaves known to the instance (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
+	SlaveSelectMode : Algorithm used to determine the slave or servant to run the job (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
+*/
 type Config struct {
 	Name    string
 	Type    InstanceType
@@ -93,50 +93,70 @@ const JOBS_DIR_NAME string = "jobs.d"
 // Default location of the configuration file and job subdirectories
 const DEFAULT_CONF_LOCATION string = "~/godo/"
 
-var locations = map[string]string{
-	"/godo/godo.conf":                 "/godo/jobs.d",
-	"/etc/godo/godo.conf":             "/etc/godo/jobs.d",
-	"/usr/local/share/godo/godo.conf": "/usr/local/share/godo/jobs.d",
-	"~/.config/godo/godo.conf":        "~/.config/godo/jobs.d/",
-	"~/godo/godo.conf":                "~/godo/jobs.d/",
+var locations = []string{
+	"/godo/",
+	"/etc/godo/",
+	"/usr/local/share/godo/",
+	"~/.config/godo/",
+	"~/godo/",
 }
 
-var configFile = ""
-var jobDirectory = ""
+var config string = ""
+var configFile string = ""
+var jobsFile string = ""
+var jobsDirectory string = ""
 
-// Looks for the configuration file from multiple possible locations
-// returns the full absolute path to the first configuration file found
-func ConfigFile() string {
-	var i = 0
-	for k, _ := range locations {
-		path := utils.SubstituteHomeDir(k)
-		fmt.Printf("Checking for file \"%s\"\n", path)
-		_, err := os.Stat(path)
+// Looks for the configuration directory from multiple possible
+// locations, returns the full absolute path to the first
+// configuration file found
+func ConfigDirectory() string {
+	if strings.Compare(config, "") != 0 {
+		return config
+	}
+	for _, v := range locations {
+		v = utils.SubstituteHomeDir(v)
+		fmt.Println(v)
+		_, err := os.Stat(v)
 		if err == nil {
 			fmt.Print("FOUND")
-			configFile = k
+			config = utils.SubstituteHomeDir(v)
 			break
 		}
-		i++
 	}
-	if configFile == "" {
+	if strings.Compare(config, "") == 0 {
 		//log.Fatal("Could not find configuration file.")
-		fmt.Println("Could not find a configuration file at any known location...")
-		fmt.Println("Defaulting to\"", DEFAULT_CONF_LOCATION, "\"...")
-		return fmt.Sprint(DEFAULT_CONF_LOCATION, CONF_FILE_NAME)
+		fmt.Println("Could not find a configuration directory...")
+		fmt.Println("Defaulting to \"" + DEFAULT_CONF_LOCATION + "\"...")
+		config = utils.SubstituteHomeDir(DEFAULT_CONF_LOCATION)
 	}
+	return config
+}
+
+// Returns the absolute path to the local godo configuration file
+func ConfigFile() string {
+	if strings.Compare(configFile, "") != 0 {
+		return configFile
+	}
+	configFile = filepath.Join(ConfigDirectory(), CONF_FILE_NAME)
 	return configFile
 }
 
-func ConfigDirectory() string {
-	return strings.TrimSuffix(ConfigFile(), CONF_FILE_NAME)
+// Returns the absolute path to the local jobs configuration file
+func JobsFile() string {
+	if strings.Compare(jobsFile, "") != 0 {
+		return jobsFile
+	}
+	jobsFile = filepath.Join(ConfigDirectory(), JOBS_FILE_NAME)
+	return jobsFile
 }
 
-// Looks for the jobs directory
-// returns the full absolute path to the jobs directory corresponding to the
-// config file used
-func JobDirectory() string {
-	return ""
+// Returns the absolute path to the local jobs directory
+func JobsDirectory() string {
+	if strings.Compare(jobsDirectory, "") != 0 {
+		return jobsDirectory
+	}
+	jobsDirectory = filepath.Join(ConfigDirectory(), JOBS_DIR_NAME)
+	return jobsDirectory
 }
 
 // Read configuration from file

@@ -3,7 +3,7 @@ package utils
 import (
 	"log"
 	"os/user"
-	"strings"
+	"path/filepath"
 )
 
 // Substitures the tilde (~) character for the home directory of the
@@ -18,7 +18,8 @@ func SubstituteHomeDir(path string) string {
 		log.Fatal("Unable to find the home directory of the current user.")
 	}
 	if path[:2] == "~/" {
-		path = strings.Replace(path, "~/", homeDir, 1)
+		//path = strings.Replace(path, "~/", "", 1)
+		path = filepath.Join(homeDir, path[2:])
 	}
-	return path
+	return filepath.Clean(path)
 }
