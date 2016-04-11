@@ -123,7 +123,9 @@ func ConfigDirectory() string {
 		//log.Fatal("Could not find configuration file.")
 		fmt.Println("Could not find a configuration directory...")
 		fmt.Println("Defaulting to \"" + DEFAULT_CONF_LOCATION + "\"...")
-		config = utils.SubstituteHomeDir(DEFAULT_CONF_LOCATION)
+		p := utils.SubstituteHomeDir(DEFAULT_CONF_LOCATION)
+		_ = os.MkdirAll(p, 0777)
+		config = p
 	}
 	return config
 }
