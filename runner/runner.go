@@ -3,6 +3,8 @@ package runner
 import (
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	"log"
+	"os"
 	"path/filepath"
 )
 
@@ -17,12 +19,16 @@ func Start(con config.Config) {
 	fmt.Println("[CONFIG FILE]", config.ConfigFile())
 	fmt.Println("[JOBS FILE PATH]", config.JobsDirectory())
 	fmt.Println("[PIDFILE]: ", filepath.Join(config.ConfigDirectory(), PIDFILE_NAME))
-	// if the pidfile doesn't exist we create our instance and write it
 
-	// if pidfile exists we read it
-	// we check if there is a process with the same pid and we attempt to kill it
+	pidfile := filepath.Join(config.ConfigDirectory(), PIDFILE_NAME)
+	f, err := os.Open(pidfile)
+	if err != nil {
+		log.Fatal("Error opening \"" + pidfile + "\"")
 
-	// we create our instance, write the pid in the pidfile and fork out
+		// If file doesn't exist, we can start the server which will write it
+
+		// If you don't have the permission to real the file... huh
+	}
 }
 
 func Restart(con config.Config) {
