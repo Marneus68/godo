@@ -14,6 +14,8 @@ godo is a shit name, you can help by finding a better one. For now I can't be bo
 
 ### Master, Slave and Servant
 
+godo is split up between 3 types of instances, _master_, _slave_ and _servant_. A _master_ and at least one _slave_ are needed to operate godo normally.
+
 #### Master
 
 The master has numerous jobs defined by simple configuration files. It also holds a list of slaves and servants that he will contact to provide them with said jobs.
@@ -32,7 +34,7 @@ A job is defined by a name, an optional list of tags and holds a one line expres
 
 Unlike pieces of software like _buildbot_, this means that you don't have to delve into a specific API to configure the tasks you want to execute on your remote machines, you can express them in any shell scripting language your slave can handle or rely on custom scripts or executables.
 
-### Tags drive help decide what to do
+### Tags drive the workflow
 
 Job tags, or tags for short, are short strings used to determine if a slave has the ability to execute a proposed job. These tags usually are named after a piece of software, the OS type, or configuration present on the slave machine and/or needed to run a job. You can think of them as a way to detect the dependencies for a job.
 
