@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	"github.com/Marneus68/godo/server"
 	"log"
 	"os"
 	"path/filepath"
@@ -31,10 +32,8 @@ func Start(con config.Config) {
 			log.Fatal("Permission errors.")
 		}
 		if os.IsNotExist(err) {
-			_, err := os.Create(pidfile)
-			if err != nil {
-				log.Fatal("Error creating pidfile (" + pidfile + ")")
-			}
+			server.Start(con)
+			return
 		}
 	}
 
@@ -43,6 +42,7 @@ func Start(con config.Config) {
 		log.Fatal("Unkown error.")
 	}
 
+	// Read the pid
 	var pid int = 0
 	s := bufio.NewScanner(f)
 	for s.Scan() {
@@ -54,6 +54,17 @@ func Start(con config.Config) {
 		break
 	}
 	fmt.Println("pid in pidfile : " + strconv.Itoa(pid) + " in (" + pidfile + ")")
+
+	// TODO: Check if a thread with that pid is still running
+
+	var running bool = false
+	if running {
+		// godo is already running !
+		log.Fatal("An instance of godo is already running")
+	} else {
+		server.Start(con)
+		return
+	}
 }
 
 func Restart(con config.Config) {
