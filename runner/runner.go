@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"syscall"
 )
 
 // Name of the file used to store the pid of the current instance
@@ -53,17 +54,30 @@ func Start(con config.Config) {
 		}
 		break
 	}
+	if pid == 0 {
+		fmt.Println("Invalid pid... Creating new godo instance.")
+		os.Remove(pidfile)
+		server.Start(con)
+	}
 	fmt.Println("pid in pidfile : " + strconv.Itoa(pid) + " in (" + pidfile + ")")
 
-	// TODO: Check if a thread with that pid is still running
-
 	var running bool = false
+
+	p, err := os.FindProcess(pid)
+	if err == nil {
+		err := p.Signal(syscall.Signal(0))
+		if err == nil {
+			running = true
+		}
+	}
+
 	if running {
 		// godo is already running !
 		log.Fatal("An instance of godo is already running")
 	} else {
+		// the pid doesn't represent a running instance, we delete the pidfile
+		os.Remove(pidfile)
 		server.Start(con)
-		return
 	}
 }
 
