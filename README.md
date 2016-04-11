@@ -4,7 +4,7 @@
 
 # godo
 
-Simple job remoting tool meant as an alternative to buildbot.
+Simple general purpose job remoting tool.
 
 ## Name
 
@@ -24,13 +24,13 @@ The slave will be contacted by the master and provided with a job to run. If the
 
 #### Servant
 
-The servant is a specific kind of slave that also acts as a master. Like a master it has a list of slaves it will try ton contact, but like the slave he also has tags and will try to run any job that's provided to him. If he can't run the job he's been provided with, it will try to pass it on its own slaves. With that specific configuration you can have the slave be the master of another slave and sending it work to do.
+The servant is a specific kind of slave that also acts as a master. Like a master it has a list of slaves it will try to contact, but like the slave it also has tags and will try to run any job that's provided to him. Depending on its configuration, it will try to pass the job on its own slaves if it can't run it of if it's busy. With that specific configuration you can have the slave be the master of another slave and sending it work to do.
 
 ### Jobs are not scripts
 
-A job is defined by a name, an optionnal list of tags and holds a one line expression that will be evaluated by the shell of the slave or servant assigned to it.
+A job is defined by a name, an optional list of tags and holds a one line expression that will be evaluated by the shell of the slave or servant assigned to it.
 
-Unlike pieces of software like _buildbot_, this means that you don't have to delve into a specific API to configure the tasks you want to execute on your remote machines, you can express them in any shell scripting language your slave can handle or rely on custom script or executables.
+Unlike pieces of software like _buildbot_, this means that you don't have to delve into a specific API to configure the tasks you want to execute on your remote machines, you can express them in any shell scripting language your slave can handle or rely on custom scripts or executables.
 
 ### Tags drive help decide what to do
 
