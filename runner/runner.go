@@ -32,7 +32,7 @@ func Start(con config.Config) {
 			log.Fatal("Permission errors.")
 		}
 		if os.IsNotExist(err) {
-			server.Start(con)
+			server.Start(con, pidfile)
 			return
 		}
 	}
@@ -62,7 +62,7 @@ func Start(con config.Config) {
 		// godo is already running !
 		log.Fatal("An instance of godo is already running")
 	} else {
-		server.Start(con)
+		server.Start(con, pidfile)
 		return
 	}
 }
