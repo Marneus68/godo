@@ -15,8 +15,11 @@ import (
 // Name of the file used to store the pid of the current instance
 const PIDFILE_NAME string = "pidfile"
 
+// Start the server is no other instance is running
+//
 // Check if an instance of godo is already running, if no other
-// instance have been found, a new one is made
+// instance have been found, we start the server which will take
+// care of the whole forking thing
 func Start(con config.Config) {
 	//p, err := os.FindProcess(
 	fmt.Println("[CONFIG PATH]", config.ConfigDirectory())
@@ -81,10 +84,12 @@ func Start(con config.Config) {
 	}
 }
 
+// Restart the server is one is already running
 func Restart(con config.Config) {
 
 }
 
+// Stop the server if one is running
 func Stop(con config.Config) {
 
 }
