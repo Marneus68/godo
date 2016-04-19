@@ -2,6 +2,7 @@ package runner
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/Marneus68/godo/config"
 	"github.com/Marneus68/godo/server"
@@ -15,6 +16,42 @@ import (
 // Name of the file used to store the pid of the current instance
 const PIDFILE_NAME string = "pidfile"
 
+// TODO: Create a function (CheckPidfile) that either returns the pid or an error
+
+// Returns the content of the pidfile or an error
+func ReadPidfile() (pid int, pidfile string, err error) {
+	pidfile = filepath.Join(config.ConfigDirectory(), PIDFILE_NAME)
+	_, err = os.Open(pidfile)
+	if err != nil {
+		//log.Fatal("Error opening \"" + pidfile + "\"")
+		fmt.Println("Error opening pidfile (" + pidfile + ")...")
+		if os.IsPermission(err) {
+			log.Fatal("Permission errors while trying to open the pidfile (" + pidfile + ")")
+		}
+		if os.IsNotExist(err) {
+			//server.Start(con, pidfile)
+			return 0, pidfile, errors.New("The pidfile doesn't exist (" + pidfile + ")")
+		}
+	}
+
+	f, err := os.Open(pidfile)
+	if err != nil {
+		log.Fatal("Unkown error.")
+	}
+
+	// Read the pid
+	s := bufio.NewScanner(f)
+	for s.Scan() {
+		line := s.Text()
+		pid, err = strconv.Atoi(line)
+		if err != nil {
+			log.Fatal("Error reading pidfile (" + pidfile + ")")
+		}
+		break
+	}
+	return pid, pidfile, nil
+}
+
 // Start the server is no other instance is running
 //
 // Check if an instance of godo is already running, if no other
@@ -27,36 +64,14 @@ func Start(con config.Config) {
 	fmt.Println("[JOBS FILE PATH]", config.JobsDirectory())
 	fmt.Println("[PIDFILE]: ", filepath.Join(config.ConfigDirectory(), PIDFILE_NAME))
 
-	pidfile := filepath.Join(config.ConfigDirectory(), PIDFILE_NAME)
-	_, err := os.Open(pidfile)
-	if err != nil {
-		//log.Fatal("Error opening \"" + pidfile + "\"")
-		fmt.Println("Error opening pidfile (" + pidfile + ")...")
-		if os.IsPermission(err) {
-			log.Fatal("Permission errors.")
-		}
-		if os.IsNotExist(err) {
-			server.Start(con, pidfile)
-			return
-		}
-	}
+	pid, pidfile, err := ReadPidfile()
 
-	f, err := os.Open(pidfile)
-	if err != nil {
-		log.Fatal("Unkown error.")
-	}
-
-	// Read the pid
-	var pid int = 0
-	s := bufio.NewScanner(f)
-	for s.Scan() {
-		line := s.Text()
-		pid, err = strconv.Atoi(line)
+	/*
 		if err != nil {
-			log.Fatal("Error reading pidfile (" + pidfile + ")")
+
 		}
-		break
-	}
+	*/
+
 	if pid == 0 {
 		fmt.Println("Invalid pid... Creating new godo instance.")
 		os.Remove(pidfile)
