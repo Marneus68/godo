@@ -1,9 +1,13 @@
+// Package doing all the heavy lifting, opening the various sockets,
+// listening or sending messages and starting the appropriate goroutines
+// when needed
 package server
 
 import (
 	"fmt"
 	"github.com/Marneus68/godo/config"
 	"log"
+	"net"
 	"os"
 	"strconv"
 	"strings"
@@ -23,4 +27,31 @@ func Start(con config.Config, pidfile string) {
 		}
 	}
 	fmt.Println("Starting godo with pid " + strconv.Itoa(os.Getpid()) + "...")
+
+	switch con.Type {
+	case config.Master:
+		break
+	case config.Slave:
+		break
+	case config.Servant:
+		break
+	}
+}
+
+func IncommingListener(con config.Config) {
+	ln, err := net.Listen("tcp", ":"+strings.TrimPrefix(con.Port, ":"))
+	if err != nil {
+
+	}
+	for {
+		conn, err := ln.Accept()
+		if err != nil {
+			// handle error
+		}
+		go handleIncomming(conn)
+	}
+}
+
+func handleIncomming(conn net.Conn) {
+
 }

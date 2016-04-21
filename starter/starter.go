@@ -1,4 +1,6 @@
-package runner
+// This package contains the functions responsible for starting, restarting and
+// stopping the current godo instance
+package starter
 
 import (
 	"bufio"
