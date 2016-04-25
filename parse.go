@@ -152,6 +152,9 @@ var Options = map[string]OptionsFunc{
 			FlagError()
 		}
 	},
+	"demon": func(arg []string) {
+		fmt.Println("Starting the godo demon...")
+	},
 }
 
 func FlagError() {

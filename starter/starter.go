@@ -1,5 +1,4 @@
-// This package contains the functions responsible for starting, restarting and
-// stopping the current godo instance
+// Package handling the start, restart and stop operations
 package starter
 
 import (
