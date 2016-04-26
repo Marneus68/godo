@@ -6,9 +6,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/Marneus68/godo/config"
-	"github.com/Marneus68/godo/server"
 	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"syscall"
@@ -53,12 +53,19 @@ func ReadPidfile() (pid int, pidfile string, err error) {
 	return pid, pidfile, nil
 }
 
+// Start godo with the deamon argument
+func startDeamon(ex string, args []string, con config.Config) {
+	arr := []string{"daemon"}
+	cmd := exec.Command(ex, arr...)
+	cmd.Start()
+}
+
 // Start the server is no other instance is running
 //
 // Check if an instance of godo is already running, if no other
 // instance have been found, we start the server which will take
 // care of the whole forking thing
-func Start(con config.Config) {
+func Start(ex string, args []string, con config.Config) {
 	//p, err := os.FindProcess(
 	fmt.Println("[CONFIG PATH]", config.ConfigDirectory())
 	fmt.Println("[CONFIG FILE]", config.ConfigFile())
@@ -67,16 +74,10 @@ func Start(con config.Config) {
 
 	pid, pidfile, err := ReadPidfile()
 
-	/*
-		if err != nil {
-
-		}
-	*/
-
 	if pid == 0 {
 		fmt.Println("Invalid pid... Creating new godo instance.")
 		os.Remove(pidfile)
-		server.Start(con, pidfile)
+		//server.Start(con, pidfile)
 	}
 	//fmt.Println("pid in pidfile : " + strconv.Itoa(pid) + " in (" + pidfile + ")")
 
@@ -96,16 +97,16 @@ func Start(con config.Config) {
 	} else {
 		// the pid doesn't represent a running instance, we delete the pidfile
 		os.Remove(pidfile)
-		server.Start(con, pidfile)
+		//server.Start(con, pidfile)
 	}
 }
 
 // Restart the server is one is already running
-func Restart(con config.Config) {
+func Restart(ex string, args []string, con config.Config) {
 
 }
 
 // Stop the server if one is running
-func Stop(con config.Config) {
+func Stop(ex string, args []string, con config.Config) {
 
 }

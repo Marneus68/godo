@@ -1,12 +1,13 @@
 // Package responsible for handling the networking
-package server
+package servers
 
 import (
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	"github.com/Marneus68/godo/starter"
 	"log"
 	"net"
-	"net/http"
+	//"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -18,7 +19,10 @@ func NormalizePortString(port string) string {
 
 // Start the godo server and writes the pid of the newly created instance
 // if pidfile isn't an empty string
-func Start(con config.Config, pidfile string) {
+func Start(con config.Config) {
+	// Find the pidfile
+	_, pidfile, _ := starter.ReadPidfile()
+
 	if strings.Compare(pidfile, "") != 0 {
 		f, err := os.Create(pidfile)
 		if err != nil {
@@ -56,7 +60,7 @@ func IncommingServer(con config.Config) {
 }
 
 func WebServer(con config.Config) {
-	http.ListenAndServ(NormalizePortString(con.WebPort), nil)
+	//http.ListenAndServ(NormalizePortString(con.WebPort), nil)
 }
 
 func handleIncomming(conn net.Conn) {

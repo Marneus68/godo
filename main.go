@@ -6,6 +6,7 @@ import (
 )
 
 func main() {
+	exname := os.Args[0]
 	args := os.Args[1:]
 	switch {
 	case len(args) == 0:
@@ -13,7 +14,7 @@ func main() {
 		os.Exit(1)
 	case len(args) > 0:
 		if fun, ok := Options[strings.ToLower(args[0])]; ok {
-			fun(args)
+			fun(exname, args)
 
 		} else {
 			PrintUsage()

@@ -4,13 +4,14 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	"github.com/Marneus68/godo/servers"
 	"github.com/Marneus68/godo/starter"
 	"log"
 	"os"
 	"strings"
 )
 
-type OptionsFunc func(args []string)
+type OptionsFunc func(ex string, args []string)
 
 var f = flag.NewFlagSet("standard flags", flag.ContinueOnError)
 
@@ -42,7 +43,7 @@ func SetJobFlags() {
 }
 
 var Options = map[string]OptionsFunc{
-	"create": func(args []string) {
+	"create": func(ex string, args []string) {
 		SetStandardFlags()
 		switch {
 		case len(args) > 1:
@@ -81,7 +82,7 @@ var Options = map[string]OptionsFunc{
 			FlagError()
 		}
 	},
-	"config": func(args []string) {
+	"config": func(ex string, args []string) {
 		SetStandardFlags()
 		switch {
 		case len(args) > 1:
@@ -118,21 +119,21 @@ var Options = map[string]OptionsFunc{
 			FlagError()
 		}
 	},
-	"start": func(args []string) {
+	"start": func(ex string, args []string) {
 		fmt.Println("start")
 		c := config.NewConfig()
-		starter.Start(*c)
+		starter.Start(ex, args, *c)
 	},
-	"restart": func(args []string) {
+	"restart": func(ex string, args []string) {
 		fmt.Println("restart")
 	},
-	"stop": func(args []string) {
+	"stop": func(ex string, args []string) {
 		fmt.Println("stop")
 	},
-	"status": func(args []string) {
+	"status": func(ex string, args []string) {
 		fmt.Println("status")
 	},
-	"job": func(args []string) {
+	"job": func(ex string, args []string) {
 		SetJobFlags()
 		switch {
 		case len(args) > 1:
@@ -152,8 +153,10 @@ var Options = map[string]OptionsFunc{
 			FlagError()
 		}
 	},
-	"demon": func(arg []string) {
+	"demon": func(ex string, arg []string) {
 		fmt.Println("Starting the godo demon...")
+		c := config.NewConfig()
+		servers.Start(*c)
 	},
 }
 
