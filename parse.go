@@ -153,7 +153,7 @@ var Options = map[string]OptionsFunc{
 			FlagError()
 		}
 	},
-	"demon": func(ex string, arg []string) {
+	"deamon": func(ex string, arg []string) {
 		fmt.Println("Starting the godo demon...")
 		c := config.NewConfig()
 		servers.Start(*c)

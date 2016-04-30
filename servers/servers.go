@@ -43,6 +43,9 @@ func Start(con config.Config) {
 		break
 	}
 	go IncommingServer(con)
+
+	for true {
+	}
 }
 
 func IncommingServer(con config.Config) {

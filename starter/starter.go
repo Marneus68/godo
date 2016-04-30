@@ -55,9 +55,13 @@ func ReadPidfile() (pid int, pidfile string, err error) {
 
 // Start godo with the deamon argument
 func startDeamon(ex string, args []string, con config.Config) {
-	arr := []string{"daemon"}
+	fmt.Println("startDeamon()")
+	arr := []string{"deamon"}
 	cmd := exec.Command(ex, arr...)
-	cmd.Start()
+	err := cmd.Start()
+	if err != nil {
+		fmt.Println(err)
+	}
 }
 
 // Start the server is no other instance is running
@@ -77,7 +81,8 @@ func Start(ex string, args []string, con config.Config) {
 	if pid == 0 {
 		fmt.Println("Invalid pid... Creating new godo instance.")
 		os.Remove(pidfile)
-		//server.Start(con, pidfile)
+		startDeamon(ex, args, con)
+		return
 	}
 	//fmt.Println("pid in pidfile : " + strconv.Itoa(pid) + " in (" + pidfile + ")")
 
@@ -95,9 +100,10 @@ func Start(ex string, args []string, con config.Config) {
 		// godo is already running !
 		log.Fatal("An instance of godo is already running")
 	} else {
-		// the pid doesn't represent a running instance, we delete the pidfile
+		// the pid doesn't represent a running instance, we delete the pidfile and start godo
 		os.Remove(pidfile)
-		//server.Start(con, pidfile)
+		startDeamon(ex, args, con)
+		return
 	}
 }
 
