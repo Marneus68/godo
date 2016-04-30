@@ -1,4 +1,4 @@
-// Package containing the job definition and association functions
+// Package job implements the job definition and its association functions
 package job
 
 import (

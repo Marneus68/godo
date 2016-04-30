@@ -1,4 +1,4 @@
-// Package responsible for handling the networking
+// Package server implements the godo server and web server
 package servers
 
 import (

@@ -1,4 +1,4 @@
-// Package handling the start, restart and stop operations
+// Package starter implements the main functions called after the argument parsing
 package starter
 
 import (

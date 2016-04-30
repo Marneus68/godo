@@ -1,4 +1,4 @@
-// Package containing the definition of the configuration
+// Package config implements the configuration definitions and its associated functions
 package config
 
 import (
