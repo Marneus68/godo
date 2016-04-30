@@ -53,7 +53,7 @@ func ReadPidfile() (pid int, pidfile string, err error) {
 	return pid, pidfile, nil
 }
 
-// Start godo with the deamon argument
+// Starts godo with the deamon argument
 func startDeamon(ex string, args []string, con config.Config) {
 	fmt.Println("startDeamon()")
 	arr := []string{"deamon"}
@@ -64,30 +64,23 @@ func startDeamon(ex string, args []string, con config.Config) {
 	}
 }
 
-// Start the server is no other instance is running
-//
-// Check if an instance of godo is already running, if no other
-// instance have been found, we start the server which will take
-// care of the whole forking thing
-func Start(ex string, args []string, con config.Config) {
-	//p, err := os.FindProcess(
-	fmt.Println("[CONFIG PATH]", config.ConfigDirectory())
-	fmt.Println("[CONFIG FILE]", config.ConfigFile())
-	fmt.Println("[JOBS FILE PATH]", config.JobsDirectory())
-	fmt.Println("[PIDFILE]: ", filepath.Join(config.ConfigDirectory(), PIDFILE_NAME))
+type ActionFunc func(pid int, ex string, args []string, con config.Config)
 
+// Checks is the pidfile exists, if it exists we check if the an associated process exists
+// If an instance of godo is found, `doIfExist` is run, if no instance is found,
+// `doIfDoesntExist` is run instead
+func checkForGodoInstance(ex string, args []string, con config.Config, doIfExist ActionFunc, doIfDoesntExist ActionFunc) {
 	pid, pidfile, err := ReadPidfile()
-
 	if pid == 0 {
+		// the pidfile doesn't exist
 		fmt.Println("Invalid pid... Creating new godo instance.")
 		os.Remove(pidfile)
-		startDeamon(ex, args, con)
+		doIfDoesntExist(pid, ex, args, con)
 		return
 	}
 	//fmt.Println("pid in pidfile : " + strconv.Itoa(pid) + " in (" + pidfile + ")")
 
 	var running bool = false
-
 	p, err := os.FindProcess(pid)
 	if err == nil {
 		err := p.Signal(syscall.Signal(0))
@@ -95,24 +88,64 @@ func Start(ex string, args []string, con config.Config) {
 			running = true
 		}
 	}
-
 	if running {
 		// godo is already running !
-		log.Fatal("An instance of godo is already running")
+		doIfExist(pid, ex, args, con)
 	} else {
-		// the pid doesn't represent a running instance, we delete the pidfile and start godo
+		// the pid doesn't represent a running instance, we delete the pidfile
 		os.Remove(pidfile)
-		startDeamon(ex, args, con)
+		doIfDoesntExist(pid, ex, args, con)
 		return
 	}
 }
 
+// Start the server is no other instance is running
+//
+// Check if an instance of godo is already running, if no other
+// instance have been found, we start the server which will take
+// care of the whole forking thing
+func Start(ex string, args []string, con config.Config) {
+	fmt.Println("[CONFIG PATH]", config.ConfigDirectory())
+	fmt.Println("[CONFIG FILE]", config.ConfigFile())
+	fmt.Println("[JOBS FILE PATH]", config.JobsDirectory())
+	fmt.Println("[PIDFILE]: ", filepath.Join(config.ConfigDirectory(), PIDFILE_NAME))
+
+	checkForGodoInstance(ex, args, con,
+		func(pid int, ex string, args []string, con config.Config) {
+			log.Fatal("An instance of godo is already running!")
+		},
+		func(pid int, ex string, args []string, con config.Config) {
+			startDeamon(ex, args, con)
+		},
+	)
+}
+
 // Restart the server is one is already running
 func Restart(ex string, args []string, con config.Config) {
+	checkForGodoInstance(ex, args, con,
+		func(pid int, ex string, args []string, con config.Config) {
 
+		},
+		func(pid int, ex string, args []string, con config.Config) {
+			startDeamon(ex, args, con)
+		},
+	)
 }
 
 // Stop the server if one is running
 func Stop(ex string, args []string, con config.Config) {
-
+	checkForGodoInstance(ex, args, con,
+		func(pid int, ex string, args []string, con config.Config) {
+			p, err := os.FindProcess(pid)
+			if err == nil {
+				err = p.Kill()
+				if err != nil {
+					log.Fatal("Error while attempting to kill the already running godo instance")
+				}
+			}
+		},
+		func(pid int, ex string, args []string, con config.Config) {
+			log.Fatal("No godo instance found!")
+		},
+	)
 }

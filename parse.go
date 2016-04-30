@@ -129,6 +129,8 @@ var Options = map[string]OptionsFunc{
 	},
 	"stop": func(ex string, args []string) {
 		fmt.Println("stop")
+		c := config.NewConfig()
+		starter.Stop(ex, args, *c)
 	},
 	"status": func(ex string, args []string) {
 		fmt.Println("status")
