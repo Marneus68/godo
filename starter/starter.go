@@ -17,8 +17,6 @@ import (
 // Name of the file used to store the pid of the current instance
 const PIDFILE_NAME string = "pidfile"
 
-// TODO: Create a function (CheckPidfile) that either returns the pid or an error
-
 // Returns the content of the pidfile or an error
 func ReadPidfile() (pid int, pidfile string, err error) {
 	pidfile = filepath.Join(config.ConfigDirectory(), PIDFILE_NAME)
@@ -54,7 +52,7 @@ func ReadPidfile() (pid int, pidfile string, err error) {
 }
 
 // Starts godo with the deamon argument
-func startDeamon(ex string, args []string, con config.Config) {
+func StartDeamon(ex string, args []string, con config.Config) {
 	fmt.Println("startDeamon()")
 	arr := []string{"deamon"}
 	cmd := exec.Command(ex, arr...)
@@ -65,7 +63,7 @@ func startDeamon(ex string, args []string, con config.Config) {
 }
 
 // Kill the daemon process
-func killDaemon(pid int) {
+func KillDaemon(pid int) {
 	p, err := os.FindProcess(pid)
 	if err == nil {
 		err = p.Kill()
@@ -126,7 +124,7 @@ func Start(ex string, args []string, con config.Config) {
 			log.Fatal("An instance of godo is already running!")
 		},
 		func(pid int, ex string, args []string, con config.Config) {
-			startDeamon(ex, args, con)
+			StartDeamon(ex, args, con)
 		},
 	)
 }
@@ -135,11 +133,11 @@ func Start(ex string, args []string, con config.Config) {
 func Restart(ex string, args []string, con config.Config) {
 	checkForGodoInstance(ex, args, con,
 		func(pid int, ex string, args []string, con config.Config) {
-			killDaemon(pid)
-			startDeamon(ex, args, con)
+			KillDaemon(pid)
+			StartDeamon(ex, args, con)
 		},
 		func(pid int, ex string, args []string, con config.Config) {
-			startDeamon(ex, args, con)
+			StartDeamon(ex, args, con)
 		},
 	)
 }
@@ -148,7 +146,7 @@ func Restart(ex string, args []string, con config.Config) {
 func Stop(ex string, args []string, con config.Config) {
 	checkForGodoInstance(ex, args, con,
 		func(pid int, ex string, args []string, con config.Config) {
-			killDaemon(pid)
+			KillDaemon(pid)
 		},
 		func(pid int, ex string, args []string, con config.Config) {
 			log.Fatal("No godo instance found!")
