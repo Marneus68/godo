@@ -64,6 +64,17 @@ func startDeamon(ex string, args []string, con config.Config) {
 	}
 }
 
+// Kill the daemon process
+func killDaemon(pid int) {
+	p, err := os.FindProcess(pid)
+	if err == nil {
+		err = p.Kill()
+		if err != nil {
+			log.Fatal("Error while attempting to kill the already running godo instance")
+		}
+	}
+}
+
 type ActionFunc func(pid int, ex string, args []string, con config.Config)
 
 // Checks is the pidfile exists, if it exists we check if the an associated process exists
@@ -124,7 +135,8 @@ func Start(ex string, args []string, con config.Config) {
 func Restart(ex string, args []string, con config.Config) {
 	checkForGodoInstance(ex, args, con,
 		func(pid int, ex string, args []string, con config.Config) {
-
+			killDaemon(pid)
+			startDeamon(ex, args, con)
 		},
 		func(pid int, ex string, args []string, con config.Config) {
 			startDeamon(ex, args, con)
@@ -136,13 +148,7 @@ func Restart(ex string, args []string, con config.Config) {
 func Stop(ex string, args []string, con config.Config) {
 	checkForGodoInstance(ex, args, con,
 		func(pid int, ex string, args []string, con config.Config) {
-			p, err := os.FindProcess(pid)
-			if err == nil {
-				err = p.Kill()
-				if err != nil {
-					log.Fatal("Error while attempting to kill the already running godo instance")
-				}
-			}
+			killDaemon(pid)
 		},
 		func(pid int, ex string, args []string, con config.Config) {
 			log.Fatal("No godo instance found!")

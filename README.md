@@ -78,6 +78,8 @@ This behavior is intended to simplify configuration when you know for sure that 
 
     godo status
 
+    godo log - open the local instance log with less
+
 ### Job creation, configuration and control
 
     godo job create <name> [options]
