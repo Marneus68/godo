@@ -1,3 +1,4 @@
+// Package containing the job definition and association functions
 package job
 
 import (
@@ -5,14 +6,12 @@ import (
 	"os"
 )
 
-/*
-Structure describing a godo job
-
-	Name: name of the job
-	Tags: job tags expected by this job to be run by a slave or servant instance
-	Command: command executed by the job
-	Config: pointer to the confguration of the current instace if it's a slave or servant
-*/
+// Structure describing a godo job
+//
+//    Name: name of the job
+//    Tags: job tags expected by this job to be run by a slave or servant instance
+//    Command: command executed by the job
+//    Config: pointer to the confguration of the current instace if it's a slave or servant
 type Job struct {
 	Name    string
 	Tags    []string
