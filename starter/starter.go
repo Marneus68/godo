@@ -17,6 +17,8 @@ import (
 // Name of the file used to store the pid of the current instance
 const PIDFILE_NAME string = "pidfile"
 
+// TODO: make the pid variable a package variable
+
 // Returns the content of the pidfile or an error
 func ReadPidfile() (pid int, pidfile string, err error) {
 	pidfile = filepath.Join(config.ConfigDirectory(), PIDFILE_NAME)
