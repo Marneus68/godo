@@ -3,7 +3,7 @@ package job
 
 import (
 	"github.com/Marneus68/godo/config"
-	"os"
+	//"os"
 )
 
 // Structure describing a godo job
@@ -20,7 +20,7 @@ type Job struct {
 }
 
 // Creates a new empty job
-func NewJob(config *Config) *Job {
+func NewJob(config *config.Config) *Job {
 	j := new(Job)
 	j.Name = ""
 	j.Tags = make([]string, 0)
@@ -30,7 +30,7 @@ func NewJob(config *Config) *Job {
 }
 
 // Creates a new job from a file
-func NewJobFromFile(path string, config *Config) *Job {
+func NewJobFromFile(path string, config *config.Config) *Job {
 	j := new(Job)
 	j.Name = ""
 	j.Tags = make([]string, 0)
