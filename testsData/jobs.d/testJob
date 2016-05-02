@@ -1,0 +1,7 @@
+# The name of the job is defined by its filename
+
+# Tags of the job
+tags=bash,gcc,make
+
+# Command of the job
+command=
