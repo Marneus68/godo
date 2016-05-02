@@ -9,6 +9,5 @@ import (
 
 func TestNewJob(t *testing.T) {
 	fmt.Println("RUNNING JOB TESTS")
-	j := job.NewJob(config.NewConfig())
-	j.Run()
+	_ = job.NewJob(config.NewConfig())
 }
