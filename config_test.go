@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Marneus68/godo/config"
 	"testing"
 )
 
 func TestNewConfig(t *testing.T) {
+	fmt.Println("RUNNING CONFIG TESTS")
 	c := config.NewConfig()
 
 	if c.Name != config.DEFAULT_NAME {
