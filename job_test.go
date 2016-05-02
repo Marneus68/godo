@@ -11,3 +11,7 @@ func TestNewJob(t *testing.T) {
 	fmt.Println("RUNNING JOB TESTS")
 	_ = job.NewJob(config.NewConfig())
 }
+
+func TestReadJob(t *testing.T) {
+
+}

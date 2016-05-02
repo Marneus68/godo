@@ -52,3 +52,7 @@ func TestMergeConfig(t *testing.T) {
 		t.Errorf("instance web port was not successfully merged")
 	}
 }
+
+func TestReadConfig(t *testing.T) {
+
+}
