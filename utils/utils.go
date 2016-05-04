@@ -2,9 +2,12 @@
 package utils
 
 import (
+	"bufio"
 	"log"
+	"os"
 	"os/user"
 	"path/filepath"
+	"strings"
 )
 
 // Substitures the tilde (~) character for the home directory of the
@@ -23,4 +26,35 @@ func SubstituteHomeDir(path string) string {
 		path = filepath.Join(homeDir, path[2:])
 	}
 	return filepath.Clean(path)
+}
+
+func ReadKeyValueFile(filename string) ([]string, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	return lines, scanner.Err()
+}
+
+func ParseKeyValueFile(filename string) (ret map[string]string, err error) {
+	lines, err := ReadKeyValueFile(filename)
+	if err != nil {
+		return ret, err
+		//log.Fatalf("readLines: %s", err)
+	}
+	for i, line := range lines {
+		//fmt.Println(i, line)
+		split := strings.Split(line, "=")
+		if len(split) == 2 {
+			ret[strings.TrimSpace(split[0])] = strings.TrimSpace(split[1])
+		}
+	}
+	return ret, err
 }
