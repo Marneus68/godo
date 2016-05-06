@@ -54,5 +54,25 @@ func TestMergeConfig(t *testing.T) {
 }
 
 func TestReadConfig(t *testing.T) {
+	c := config.NewConfig()
+	err := c.ReadFromFile("testData/godo.config")
+	if err != nil {
+		t.Errorf("there was an error opening the test data")
+	}
 
+	if c.Name != "test" {
+		t.Errorf("instance name was not successfully read")
+	}
+	if c.Type != config.Master {
+		t.Errorf("instance type was not successfully read")
+	}
+	if c.Port != "1234" {
+		t.Errorf("instance port was not successfully read")
+	}
+	if c.Web != true {
+		t.Errorf("instance web status was not successfully read")
+	}
+	if c.WebPort != "5678" {
+		t.Errorf("instance web port was not successfully read")
+	}
 }

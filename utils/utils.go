@@ -7,8 +7,21 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
+
+//
+func IsValidPortString(port string) bool {
+	p, err := strconv.Atoi(port)
+	if err != nil {
+		return false
+	}
+	if p > 65535 {
+		return false
+	}
+	return true
+}
 
 // Substitures the tilde (~) character for the home directory of the
 // current user (but only if its the first character of the string)
@@ -49,8 +62,7 @@ func ParseKeyValueFile(filename string) (ret map[string]string, err error) {
 		return ret, err
 		//log.Fatalf("readLines: %s", err)
 	}
-	for i, line := range lines {
-		//fmt.Println(i, line)
+	for _, line := range lines {
 		split := strings.Split(line, "=")
 		if len(split) == 2 {
 			ret[strings.TrimSpace(split[0])] = strings.TrimSpace(split[1])

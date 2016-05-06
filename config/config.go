@@ -60,18 +60,16 @@ func init() {
 	DEFAULT_SLAVES = []string{}
 }
 
-/*
-Structure describing the godo instance configuration
-
-	Name : instance name
-	Type : instance type
-	Port : port godo listens on if it's either a slave or a servant
-	Tags : job tags accepted by this instance (ONLY APPLICABLE FOR SERVANT OR SLAVE INSTANCES)
-	Web : boolean, tells if the instance has its web interface enabled
-	WebPort : port for the web interface
-	Slaves : list of slaves known to the instance (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
-	SlaveSelectMode : Algorithm used to determine the slave or servant to run the job (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
-*/
+// Structure describing the godo instance configuration
+//
+//     Name : instance name
+//     Type : instance type
+//     Port : port godo listens on if it's either a slave or a servant
+//     Tags : job tags accepted by this instance (ONLY APPLICABLE FOR SERVANT OR SLAVE INSTANCES)
+//     Web : boolean, tells if the instance has its web interface enabled
+//     WebPort : port for the web interface
+//     Slaves : list of slaves known to the instance (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
+//     SlaveSelectMode : Algorithm used to determine the slave or servant to run the job (ONLY APPLICABLE FOR MASTER AND SERVANT INSTANCES)
 type Config struct {
 	Name    string
 	Type    InstanceType
@@ -149,9 +147,72 @@ func JobsDirectory() string {
 	return jobsDirectory
 }
 
-// Read configuration from file
-func (config Config) ReadFromFile(path string) {
+// Print the "wrong type" message for this kind of file
+func PrintWrong(path string, key string, value string) {
+	fmt.Println("Wrong " + key + " value specified in config file (" + value + ") [" + path + "]")
+}
 
+// Read configuration from file
+func (config Config) ReadFromFile(path string) error {
+	kv, err := utils.ParseKeyValueFile(path)
+	if err != nil {
+		return err
+	}
+	if n, ok := kv["name"]; ok {
+		config.Name = strings.TrimSpace(n)
+	}
+	if t, ok := kv["type"]; ok {
+		switch strings.TrimSpace(t) {
+		case "master":
+			config.Type = Master
+			break
+		case "slave":
+			config.Type = Slave
+			break
+		case "servant":
+			config.Type = Servant
+			break
+		default:
+			PrintWrong(path, "type", t)
+		}
+	}
+	if p, ok := kv["port"]; ok {
+		p = strings.TrimSpace(p)
+		if utils.IsValidPortString(p) {
+			config.Port = p
+		} else {
+			PrintWrong(path, "port", p)
+		}
+	}
+	if t, ok := kv["tags"]; ok {
+		tags := strings.Split(t, ",")
+		for i, s := range tags {
+			tags[i] = strings.TrimSpace(s)
+		}
+		config.Tags = tags
+	}
+	if w, ok := kv["web"]; ok {
+		switch strings.ToLower(strings.TrimSpace(w)) {
+		case "on":
+		case "true":
+			config.Web = true
+			break
+		case "off":
+		case "false":
+			config.Web = false
+			break
+		default:
+			PrintWrong(path, "web", w)
+		}
+	}
+	if wp, ok := kv["webPort"]; ok {
+		if utils.IsValidPortString(strings.TrimSpace(wp)) {
+			config.Port = wp
+		} else {
+			PrintWrong(path, "webPort", wp)
+		}
+	}
+	return nil
 }
 
 // Save configuration to file
