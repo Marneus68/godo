@@ -13,5 +13,13 @@ func TestNewJob(t *testing.T) {
 }
 
 func TestReadJob(t *testing.T) {
-
+	c := config.NewConfig()
+	j := job.NewJob(c)
+	err := j.ReadFromFile("testData/jobs.d/testJob")
+	if err != nil {
+		t.Errorf("there was an error reading the job description file")
+	}
+	if j.Name != "testData" {
+		t.Error("job name was not successfully read")
+	}
 }

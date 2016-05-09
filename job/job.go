@@ -3,6 +3,9 @@ package job
 
 import (
 	"github.com/Marneus68/godo/config"
+	"github.com/Marneus68/godo/utils"
+	"path/filepath"
+	"strings"
 	//"os"
 )
 
@@ -40,8 +43,23 @@ func NewJobFromFile(path string, config *config.Config) *Job {
 }
 
 // Read job from file
-func (job Job) ReadFromFile(path string) {
-
+func (j Job) ReadFromFile(path string) error {
+	kv, err := utils.ParseKeyValueFile(path)
+	if err != nil {
+		return err
+	}
+	j.Name = filepath.Base(path)
+	if t, ok := kv["tags"]; ok {
+		tags := strings.Split(t, ",")
+		for i, s := range tags {
+			tags[i] = strings.TrimSpace(s)
+		}
+		j.Tags = tags
+	}
+	if n, ok := kv["command"]; ok {
+		j.Command = strings.TrimSpace(n)
+	}
+	return nil
 }
 
 // Save job to file
