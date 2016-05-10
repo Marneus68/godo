@@ -205,12 +205,12 @@ func ReadFromFile(path string) (ret Config, err error) {
 			PrintWrong(path, "web", w)
 		}
 	}
-	if wp, ok := kv["webPort"]; ok {
+	if wp, ok := kv["webport"]; ok {
 		wp = strings.TrimSpace(wp)
 		if utils.IsValidPortString(wp) {
 			ret.WebPort = wp
 		} else {
-			PrintWrong(path, "webPort", wp)
+			PrintWrong(path, "webport", wp)
 		}
 	}
 	return ret, nil

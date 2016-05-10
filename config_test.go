@@ -40,17 +40,17 @@ func TestMergeConfig(t *testing.T) {
 
 	nn := c.MergeConfig(*n)
 
-	if nn.Name != "instance_name" {
+	if strings.Compare(nn.Name, "instance_name") != 0 {
 		t.Errorf("instance name was not successfully merged")
 	}
 	if nn.Web != true {
 		t.Errorf("instance web service was not successfully merged")
 
 	}
-	if nn.Port != "1234" {
+	if strings.Compare(nn.Port, "1234") != 0 {
 		t.Errorf("instance port was not successfully merged")
 	}
-	if nn.WebPort != "5678" {
+	if strings.Compare(nn.WebPort, "5678") != 0 {
 		t.Errorf("instance web port was not successfully merged")
 	}
 }
