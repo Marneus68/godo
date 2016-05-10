@@ -43,10 +43,10 @@ func NewJobFromFile(path string, config *config.Config) *Job {
 }
 
 // Read job from file
-func (j Job) ReadFromFile(path string) error {
+func ReadFromFile(path string) (j Job, err error) {
 	kv, err := utils.ParseKeyValueFile(path)
 	if err != nil {
-		return err
+		return j, err
 	}
 	j.Name = filepath.Base(path)
 	if t, ok := kv["tags"]; ok {
@@ -59,7 +59,7 @@ func (j Job) ReadFromFile(path string) error {
 	if n, ok := kv["command"]; ok {
 		j.Command = strings.TrimSpace(n)
 	}
-	return nil
+	return j, nil
 }
 
 // Save job to file
