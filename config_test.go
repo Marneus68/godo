@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	"os"
+	"strings"
 	"testing"
 )
 
@@ -54,25 +56,27 @@ func TestMergeConfig(t *testing.T) {
 }
 
 func TestReadConfig(t *testing.T) {
-	c := config.NewConfig()
-	err := c.ReadFromFile("testData/godo.config")
+	wd, _ := os.Getwd()
+	path := wd + "/testsData/godo.config"
+	t.Log("TEST DATA PATH: " + path)
+	c, err := config.ReadFromFile(path)
 	if err != nil {
 		t.Errorf("there was an error opening the test data")
 	}
 
-	if c.Name != "test" {
+	if strings.Compare(c.Name, "test") != 0 {
 		t.Errorf("instance name was not successfully read")
 	}
 	if c.Type != config.Master {
 		t.Errorf("instance type was not successfully read")
 	}
-	if c.Port != "1234" {
+	if strings.Compare(c.Port, "1234") != 0 {
 		t.Errorf("instance port was not successfully read")
 	}
 	if c.Web != true {
 		t.Errorf("instance web status was not successfully read")
 	}
-	if c.WebPort != "5678" {
+	if strings.Compare(c.WebPort, "5678") != 0 {
 		t.Errorf("instance web port was not successfully read")
 	}
 }

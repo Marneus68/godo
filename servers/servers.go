@@ -4,10 +4,11 @@ package servers
 import (
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	//"github.com/Marneus68/godo/job"
 	"github.com/Marneus68/godo/starter"
 	"log"
 	"net"
-	//"net/http"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -63,7 +64,18 @@ func IncommingServer(con config.Config) {
 }
 
 func WebServer(con config.Config) {
-	//http.ListenAndServ(NormalizePortString(con.WebPort), nil)
+	http.ListenAndServe(NormalizePortString(con.WebPort), nil)
+	UpdateWebServerJobs()
+}
+
+func UpdateWebServerJobs() {
+	/*
+		for i, j := range job.Jobs() {
+			http.HandleFunc("/"+j.Name, func(w http.ResponseWriter, r *http.Request) {
+				fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+			})
+		}
+	*/
 }
 
 func handleIncomming(conn net.Conn) {

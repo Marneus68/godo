@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/Marneus68/godo/config"
 	"github.com/Marneus68/godo/job"
+	"os"
+	"strings"
 	"testing"
 )
 
@@ -15,11 +17,14 @@ func TestNewJob(t *testing.T) {
 func TestReadJob(t *testing.T) {
 	c := config.NewConfig()
 	j := job.NewJob(c)
-	err := j.ReadFromFile("testData/jobs.d/testJob")
+	wd, _ := os.Getwd()
+	path := wd + "/testsData/jobs.d/testJob"
+	t.Log("TEST DATA PATH: " + path)
+	err := j.ReadFromFile(path)
 	if err != nil {
 		t.Errorf("there was an error reading the job description file")
 	}
-	if j.Name != "testData" {
+	if strings.Compare(j.Name, "testData") != 0 {
 		t.Error("job name was not successfully read")
 	}
 }

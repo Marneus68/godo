@@ -153,24 +153,24 @@ func PrintWrong(path string, key string, value string) {
 }
 
 // Read configuration from file
-func (config Config) ReadFromFile(path string) error {
+func ReadFromFile(path string) (ret Config, err error) {
 	kv, err := utils.ParseKeyValueFile(path)
 	if err != nil {
-		return err
+		return ret, err
 	}
 	if n, ok := kv["name"]; ok {
-		config.Name = strings.TrimSpace(n)
+		ret.Name = strings.TrimSpace(n)
 	}
 	if t, ok := kv["type"]; ok {
 		switch strings.TrimSpace(t) {
 		case "master":
-			config.Type = Master
+			ret.Type = Master
 			break
 		case "slave":
-			config.Type = Slave
+			ret.Type = Slave
 			break
 		case "servant":
-			config.Type = Servant
+			ret.Type = Servant
 			break
 		default:
 			PrintWrong(path, "type", t)
@@ -179,7 +179,7 @@ func (config Config) ReadFromFile(path string) error {
 	if p, ok := kv["port"]; ok {
 		p = strings.TrimSpace(p)
 		if utils.IsValidPortString(p) {
-			config.Port = p
+			ret.Port = p
 		} else {
 			PrintWrong(path, "port", p)
 		}
@@ -189,30 +189,31 @@ func (config Config) ReadFromFile(path string) error {
 		for i, s := range tags {
 			tags[i] = strings.TrimSpace(s)
 		}
-		config.Tags = tags
+		ret.Tags = tags
 	}
 	if w, ok := kv["web"]; ok {
 		switch strings.ToLower(strings.TrimSpace(w)) {
 		case "on":
 		case "true":
-			config.Web = true
+			ret.Web = true
 			break
 		case "off":
 		case "false":
-			config.Web = false
+			ret.Web = false
 			break
 		default:
 			PrintWrong(path, "web", w)
 		}
 	}
 	if wp, ok := kv["webPort"]; ok {
-		if utils.IsValidPortString(strings.TrimSpace(wp)) {
-			config.Port = wp
+		wp = strings.TrimSpace(wp)
+		if utils.IsValidPortString(wp) {
+			ret.WebPort = wp
 		} else {
 			PrintWrong(path, "webPort", wp)
 		}
 	}
-	return nil
+	return ret, nil
 }
 
 // Save configuration to file

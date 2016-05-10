@@ -72,3 +72,7 @@ func (job Job) Run() {
 		////p, err := os.StarProcess(
 	}()
 }
+
+func Jobs(path string) ([]Job, error) {
+	return nil, nil
+}

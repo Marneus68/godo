@@ -41,9 +41,11 @@ func SubstituteHomeDir(path string) string {
 	return filepath.Clean(path)
 }
 
+// Read a file and return every line as a string array
 func ReadKeyValueFile(filename string) ([]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
+		log.Fatalf("Error opening the file (%s) [%s]", filename, err)
 		return nil, err
 	}
 	defer file.Close()
@@ -56,13 +58,22 @@ func ReadKeyValueFile(filename string) ([]string, error) {
 	return lines, scanner.Err()
 }
 
+// Read a key=value file and returns a collection of strings indexed by their
+// keys
 func ParseKeyValueFile(filename string) (ret map[string]string, err error) {
 	lines, err := ReadKeyValueFile(filename)
 	if err != nil {
+		log.Fatalf("Error opening the file (%s) [%s]", filename, err)
 		return ret, err
-		//log.Fatalf("readLines: %s", err)
 	}
+	ret = make(map[string]string)
 	for _, line := range lines {
+		if strings.Compare(line, "") == 0 {
+			continue
+		}
+		if strings.HasPrefix(line, "#") {
+			continue
+		}
 		split := strings.Split(line, "=")
 		if len(split) == 2 {
 			ret[strings.TrimSpace(split[0])] = strings.TrimSpace(split[1])
