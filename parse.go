@@ -103,7 +103,6 @@ var Options = map[string]OptionsFunc{
 	"config": func(ex string, args []string) {
 		switch {
 		case len(args) > 1:
-			c := config.NewConfig()
 			switch strings.ToLower(args[1]) {
 			case "edit":
 				fmt.Println("Editing local configuration file")

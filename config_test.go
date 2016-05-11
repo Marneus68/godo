@@ -59,7 +59,7 @@ func TestReadConfig(t *testing.T) {
 	wd, _ := os.Getwd()
 	path := wd + "/testsData/godo.config"
 	t.Log("TEST DATA PATH: " + path)
-	c, err := config.ReadFromFile(path)
+	c, err := config.ConfigFromFile(path)
 	if err != nil {
 		t.Errorf("there was an error opening the test data")
 	}
