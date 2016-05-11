@@ -2,6 +2,7 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
 	"github.com/Marneus68/godo/utils"
 	"os"
@@ -271,16 +272,34 @@ func NewConfig() *Config {
 	return c
 }
 
+func (config Config) ToArgs() (ret []string) {
+	return ret
+}
+
 // Prints a human readable rundown of the configuration
 func (config Config) ToString() string {
-	ret := ""
+	var buffer bytes.Buffer
+	buffer.WriteString("[godo ")
 	switch config.Type {
 	case Master:
-		ret = fmt.Sprintf("[MASTER]")
+		buffer.WriteString("master")
 	case Servant:
-		ret = fmt.Sprintf("[SERVANT]")
+		buffer.WriteString("servant")
 	case Slave:
-		ret = fmt.Sprintf("[SLAVE]")
+		buffer.WriteString("slave")
 	}
-	return ret
+	buffer.WriteString(" instance]\nname : ")
+	buffer.WriteString(config.Name)
+	buffer.WriteString("\nport : ")
+	buffer.WriteString(config.Port)
+	buffer.WriteString("\nweb interface : ")
+	switch config.Web {
+	case true:
+		buffer.WriteString("enabled\nweb interface port : ")
+		buffer.WriteString(config.WebPort)
+		buffer.WriteString("\n")
+	case false:
+		buffer.WriteString("disabled\n")
+	}
+	return buffer.String()
 }
