@@ -153,7 +153,7 @@ func PrintWrong(path string, key string, value string) {
 }
 
 // Read configuration from file
-func ReadFromFile(path string) (ret Config, err error) {
+func ConfigFromFile(path string) (ret Config, err error) {
 	kv, err := utils.ParseKeyValueFile(path)
 	if err != nil {
 		return ret, err

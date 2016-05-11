@@ -18,6 +18,7 @@ var f = flag.NewFlagSet("standard flags", flag.ContinueOnError)
 var defConfigFilePath *string
 
 var defName *string
+var defType *string
 var defPort *string
 var defWeb *bool
 var defWebPort *string
@@ -29,10 +30,45 @@ var defComm *string
 func SetStandardFlags() {
 	defConfigFilePath = f.String("conf", "", "Path to the config file")
 	defName = f.String("name", "", "The name of the instance")
+	defType = f.String("type", "", "The type of the instance")
 	defPort = f.String("port", "", "Port used for communication")
 	defWeb = f.Bool("web", false, "Enables the web interface")
 	defWebPort = f.String("webport", "", "Port of the web interface")
 	defTags = f.String("tags", "", "Comma separated list of tags")
+}
+
+func ParseStandardFlags(args []string, t config.InstanceType) (ret config.Config) {
+	SetStandardFlags()
+	ret.Type = t
+	if len(args) > 0 {
+		if err := f.Parse(args); err != nil {
+			log.Fatal("Error while parsing command line parameters")
+		}
+		if f.Parsed() {
+			ret.Type = config.Master
+			if *defName != "" {
+				ret.Name = *defName
+			}
+			if *defType != "" {
+				switch strings.TrimSpace(strings.ToLower(*defType)) {
+				case "master":
+					ret.Type = config.Master
+				case "servant":
+					ret.Type = config.Servant
+				case "slave":
+					ret.Type = config.Slave
+				}
+			}
+			if *defPort != "" {
+				ret.Port = *defPort
+			}
+			ret.Web = *defWeb
+			if *defWebPort != "" {
+				ret.WebPort = *defWebPort
+			}
+		}
+	}
+	return ret
 }
 
 // Defines the possible flags for the Job control mode
@@ -44,68 +80,40 @@ func SetJobFlags() {
 
 var Options = map[string]OptionsFunc{
 	"create": func(ex string, args []string) {
-		SetStandardFlags()
 		switch {
 		case len(args) > 1:
-			c := config.NewConfig()
+			var t config.InstanceType
 			switch strings.ToLower(args[1]) {
 			case "master":
-				c.Type = config.Master
+				t = config.Master
 			case "servant":
-				c.Type = config.Servant
+				t = config.Servant
 			case "slave":
-				c.Type = config.Slave
+				t = config.Slave
 			default:
 				log.Fatal("Unknown instance type  \"", args[1], "\"... Aborting.")
 			}
 			fmt.Println("Creating a", args[1], "godo instance")
-			if len(args) > 2 {
-				if err := f.Parse(args[2:]); err != nil {
-					log.Fatal("Error while parsing command line parameters")
-				}
-				if f.Parsed() {
-					c.Type = config.Master
-					if *defName != "" {
-						c.Name = *defName
-					}
-					if *defPort != "" {
-						c.Port = *defPort
-					}
-					c.Web = *defWeb
-					if *defWebPort != "" {
-						c.WebPort = *defWebPort
-					}
-				}
-			}
+			c := ParseStandardFlags(args[2:], t)
 			fmt.Println(c.ToString())
 		default:
 			FlagError()
 		}
 	},
 	"config": func(ex string, args []string) {
-		SetStandardFlags()
 		switch {
 		case len(args) > 1:
 			c := config.NewConfig()
 			switch strings.ToLower(args[1]) {
 			case "edit":
+				fmt.Println("Editing local configuration file")
 				if len(args) > 2 {
-					if err := f.Parse(args[2:]); err != nil {
-						log.Fatal("Error while parsing command line parameters")
-					}
-					if f.Parsed() {
-						c.Type = config.Master
-						if *defName != "" {
-							c.Name = *defName
-						}
-						if *defPort != "" {
-							c.Port = *defPort
-						}
-						c.Web = *defWeb
-						if *defWebPort != "" {
-							c.WebPort = *defWebPort
-						}
-					}
+					// TODO: Read the local config file
+					// Parse the command line config
+					c := ParseStandardFlags(args[2:], config.Master)
+					// TODO: Merge the command line config to the local config
+					// TODO: Write the result
+					fmt.Println(c.ToString())
 				} else {
 					fmt.Println("No parameters provided...")
 					fmt.Println("Attempting to open config file with standard text editor...")
@@ -114,7 +122,6 @@ var Options = map[string]OptionsFunc{
 			default:
 				FlagError()
 			}
-			fmt.Println(c.ToString())
 		default:
 			FlagError()
 		}
@@ -157,7 +164,12 @@ var Options = map[string]OptionsFunc{
 	},
 	"deamon": func(ex string, arg []string) {
 		fmt.Println("Starting the godo demon...")
+		// TODO: Read config from config file
 		c := config.NewConfig()
+		// TODO: Create config from command line arguments
+
+		// TODO: Merge command line config to config from file
+
 		servers.Start(*c)
 	},
 }
