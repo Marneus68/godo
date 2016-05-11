@@ -273,6 +273,23 @@ func NewConfig() *Config {
 }
 
 func (config Config) ToArgs() (ret []string) {
+	ret = append(ret, "-name="+config.Name)
+	switch config.Type {
+	case Master:
+		ret = append(ret, "-type=master")
+	case Servant:
+		ret = append(ret, "-type=servant")
+	case Slave:
+		ret = append(ret, "-type=slave")
+	}
+	ret = append(ret, "-port="+config.Port)
+	switch config.Web {
+	case true:
+		ret = append(ret, "-web=true")
+	case false:
+		ret = append(ret, "-web=false")
+	}
+	ret = append(ret, "-webport="+config.WebPort)
 	return ret
 }
 
