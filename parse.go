@@ -37,6 +37,7 @@ func SetStandardFlags() {
 	defTags = f.String("tags", "", "Comma separated list of tags")
 }
 
+// Parse the standard flags and returns a config
 func ParseStandardFlags(args []string, t config.InstanceType) (ret config.Config) {
 	SetStandardFlags()
 	ret.Type = t
