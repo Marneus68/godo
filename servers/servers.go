@@ -14,6 +14,7 @@ import (
 	"strings"
 )
 
+// Normalize the port string
 func NormalizePortString(port string) string {
 	return ":" + strings.TrimPrefix(port, ":")
 }

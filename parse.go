@@ -79,6 +79,12 @@ func SetJobFlags() {
 	defTags = f.String("tags", "", "Tags for the job")
 }
 
+// Parse the job flags
+func ParseJobFlags(args []string) (ret job.Job) {
+	// TODO
+	return ret
+}
+
 var Options = map[string]OptionsFunc{
 	"create": func(ex string, args []string) {
 		switch {
