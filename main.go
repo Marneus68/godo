@@ -1,3 +1,4 @@
+//go:generate spac static static.go
 package main
 
 import (

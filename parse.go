@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	"github.com/Marneus68/godo/job"
 	"github.com/Marneus68/godo/servers"
 	"github.com/Marneus68/godo/starter"
 	"log"
