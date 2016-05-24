@@ -177,7 +177,7 @@ var Options = map[string]OptionsFunc{
 
 		// TODO: Merge command line config to config from file
 
-		servers.Start(*c)
+		servers.Start(*c, &SpacContent)
 	},
 }
 

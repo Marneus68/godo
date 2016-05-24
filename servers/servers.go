@@ -6,6 +6,7 @@ import (
 	"github.com/Marneus68/godo/config"
 	//"github.com/Marneus68/godo/job"
 	"github.com/Marneus68/godo/starter"
+	"html"
 	"log"
 	"net"
 	"net/http"
@@ -14,6 +15,9 @@ import (
 	"strings"
 )
 
+// Server static resources
+var resources *map[string][]byte
+
 // Normalize the port string
 func NormalizePortString(port string) string {
 	return ":" + strings.TrimPrefix(port, ":")
@@ -21,7 +25,10 @@ func NormalizePortString(port string) string {
 
 // Start the godo server and writes the pid of the newly created instance
 // if pidfile isn't an empty string
-func Start(con config.Config) {
+func Start(con config.Config, res *map[string][]byte) {
+	// Set the global static resources of the web server
+	resources = res
+
 	// Find the pidfile
 	_, pidfile, _ := starter.ReadPidfile()
 
@@ -65,18 +72,14 @@ func IncommingServer(con config.Config) {
 }
 
 func WebServer(con config.Config) {
-	http.ListenAndServe(NormalizePortString(con.WebPort), nil)
-	UpdateWebServerJobs()
-}
-
-func UpdateWebServerJobs() {
-	/*
-		for i, j := range job.Jobs() {
-			http.HandleFunc("/"+j.Name, func(w http.ResponseWriter, r *http.Request) {
-				fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
-			})
-		}
-	*/
+	http.ListenAndServe(NormalizePortString(":"+con.WebPort), nil)
+	// Serve the static content
+	for k, _ := range *resources {
+		fmt.Println(k)
+		http.HandleFunc(strings.Replace(k, "static", "", 1), func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+		})
+	}
 }
 
 func handleIncomming(conn net.Conn) {
