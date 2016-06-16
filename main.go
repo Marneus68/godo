@@ -1,4 +1,4 @@
-//go:generate spac static static.go
+//go:generate spac www static
 package main
 
 import (

@@ -4,9 +4,10 @@ package servers
 import (
 	"fmt"
 	"github.com/Marneus68/godo/config"
+	"github.com/Marneus68/godo/static"
 	//"github.com/Marneus68/godo/job"
 	"github.com/Marneus68/godo/starter"
-	"html"
+	//"html"
 	"log"
 	"net"
 	"net/http"
@@ -16,7 +17,7 @@ import (
 )
 
 // Server static resources
-var resources *map[string][]byte
+//var resources *map[string][]byte
 
 // Normalize the port string
 func NormalizePortString(port string) string {
@@ -25,9 +26,9 @@ func NormalizePortString(port string) string {
 
 // Start the godo server and writes the pid of the newly created instance
 // if pidfile isn't an empty string
-func Start(con config.Config, res *map[string][]byte) {
+func Start(con config.Config) {
 	// Set the global static resources of the web server
-	resources = res
+	//resources = res
 
 	// Find the pidfile
 	_, pidfile, _ := starter.ReadPidfile()
@@ -44,17 +45,20 @@ func Start(con config.Config, res *map[string][]byte) {
 	}
 	fmt.Println("Starting godo with pid " + strconv.Itoa(os.Getpid()) + "...")
 
-	switch con.Type {
-	case config.Master:
-		if con.Web {
-			go WebServer(con)
+	/*
+		switch con.Type {
+		case config.Master:
+			if con.Web {
+				go WebServer(con)
+			}
+			break
 		}
-		break
-	}
-	go IncommingServer(con)
+		go IncommingServer(con)
 
-	for true {
-	}
+		for true {
+		}
+	*/
+	WebServer(con)
 }
 
 func IncommingServer(con config.Config) {
@@ -72,14 +76,17 @@ func IncommingServer(con config.Config) {
 }
 
 func WebServer(con config.Config) {
-	http.ListenAndServe(NormalizePortString(":"+con.WebPort), nil)
-	// Serve the static content
-	for k, _ := range *resources {
-		fmt.Println(k)
+	// Add handlers for all the static content
+	for k, v := range static.Content {
 		http.HandleFunc(strings.Replace(k, "static", "", 1), func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "Hello, %q", html.EscapeString(r.URL.Path))
+			fmt.Fprintf(w, string(v))
 		})
 	}
+	http.HandleFunc("/index.html", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "This is the end install gentoo")
+	})
+	// Serve the static content
+	http.ListenAndServe(":5678", nil)
 }
 
 func handleIncomming(conn net.Conn) {
