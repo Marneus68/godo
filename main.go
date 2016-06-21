@@ -16,7 +16,6 @@ func main() {
 	case len(args) > 0:
 		if fun, ok := Options[strings.ToLower(args[0])]; ok {
 			fun(exname, args)
-
 		} else {
 			PrintUsage()
 		}

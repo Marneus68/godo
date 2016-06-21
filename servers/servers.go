@@ -77,14 +77,21 @@ func IncommingServer(con config.Config) {
 
 func WebServer(con config.Config) {
 	// Add handlers for all the static content
-	for k, v := range static.Content {
-		http.HandleFunc(strings.Replace(k, "static", "", 1), func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, string(v))
-		})
-	}
+	/*
+		for k, v := range static.Content {
+			http.HandleFunc(strings.Replace(k, "static", "", 1), func(w http.ResponseWriter, r *http.Request) {
+				fmt.Fprintf(w, string(v))
+			})
+		}
+	*/
 	http.HandleFunc("/index.html", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "This is the end install gentoo")
+		fmt.Fprintf(w, string(static.Content["www/index.html"]))
 	})
+	/*
+		http.HandleFunc("/index.html", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, "This is the end install gentoo")
+		})
+	*/
 	// Serve the static content
 	http.ListenAndServe(":5678", nil)
 }
