@@ -4,10 +4,8 @@ package servers
 import (
 	"fmt"
 	"github.com/Marneus68/godo/config"
-	"github.com/Marneus68/godo/static"
-	//"github.com/Marneus68/godo/job"
 	"github.com/Marneus68/godo/starter"
-	//"html"
+	"github.com/Marneus68/godo/static"
 	"log"
 	"net"
 	"net/http"
@@ -16,8 +14,8 @@ import (
 	"strings"
 )
 
-// Server static resources
-//var resources *map[string][]byte
+// Local server configuration
+var localConfig config.Config
 
 // Normalize the port string
 func NormalizePortString(port string) string {
@@ -27,8 +25,8 @@ func NormalizePortString(port string) string {
 // Start the godo server and writes the pid of the newly created instance
 // if pidfile isn't an empty string
 func Start(con config.Config) {
-	// Set the global static resources of the web server
-	//resources = res
+	// Set the local configuration for this instance of the server
+	localConfig = con
 
 	// Find the pidfile
 	_, pidfile, _ := starter.ReadPidfile()
@@ -58,11 +56,11 @@ func Start(con config.Config) {
 		for true {
 		}
 	*/
-	WebServer(con)
+	WebServer()
 }
 
-func IncommingServer(con config.Config) {
-	ln, err := net.Listen("tcp", NormalizePortString(con.Port))
+func IncommingServer() {
+	ln, err := net.Listen("tcp", ":"+localConfig.Port)
 	if err != nil {
 		// handle error
 	}
@@ -75,23 +73,25 @@ func IncommingServer(con config.Config) {
 	}
 }
 
-func WebServer(con config.Config) {
+func WebServer() {
 	// Add handlers for all the static content
-	/*
-		for k, v := range static.Content {
-			http.HandleFunc(strings.Replace(k, "static", "", 1), func(w http.ResponseWriter, r *http.Request) {
-				fmt.Fprintf(w, string(v))
+	for index, content := range static.Content {
+		if !strings.Contains(index, "index.html") {
+			http.HandleFunc(strings.Replace(index, "www/", "", -1), func(w http.ResponseWriter, r *http.Request) {
+				fmt.Fprintf(w, string(content))
 			})
 		}
-	*/
+	}
 	http.HandleFunc("/index.html", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(static.Content["www/index.html"]))
 	})
+
 	/*
-		http.HandleFunc("/index.html", func(w http.ResponseWriter, r *http.Request) {
-			fmt.Fprintf(w, "This is the end install gentoo")
+		http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			fmt.Fprintf(w, string(static.Content["www/index.html"]))
 		})
 	*/
+
 	// Serve the static content
 	http.ListenAndServe(":5678", nil)
 }

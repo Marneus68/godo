@@ -111,10 +111,9 @@ func ConfigDirectory() string {
 	}
 	for _, v := range locations {
 		v = utils.SubstituteHomeDir(v)
-		fmt.Println(v)
 		_, err := os.Stat(v)
 		if err == nil {
-			fmt.Print("FOUND")
+			fmt.Println("Configuration directory found at \"" + v + "\"...")
 			config = utils.SubstituteHomeDir(v)
 			break
 		}

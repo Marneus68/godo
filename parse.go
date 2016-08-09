@@ -134,15 +134,15 @@ var Options = map[string]OptionsFunc{
 		}
 	},
 	"start": func(ex string, args []string) {
-		fmt.Println("start")
+		fmt.Println("Starting new godo instance...")
 		c := config.NewConfig()
 		starter.Start(ex, args, *c)
 	},
 	"restart": func(ex string, args []string) {
-		fmt.Println("restart")
+		fmt.Println("Restarting godo instance...")
 	},
 	"stop": func(ex string, args []string) {
-		fmt.Println("stop")
+		fmt.Println("Stopping godo instance...")
 		c := config.NewConfig()
 		starter.Stop(ex, args, *c)
 	},
@@ -170,7 +170,7 @@ var Options = map[string]OptionsFunc{
 		}
 	},
 	"deamon": func(ex string, arg []string) {
-		fmt.Println("Starting the godo demon...")
+		fmt.Println("Starting godo demon...")
 		// TODO: Read config from config file
 		c := config.NewConfig()
 		// TODO: Create config from command line arguments

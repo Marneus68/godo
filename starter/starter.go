@@ -55,7 +55,7 @@ func ReadPidfile() (pid int, pidfile string, err error) {
 
 // Starts godo with the deamon argument
 func StartDeamon(ex string, args []string, con config.Config) {
-	fmt.Println("startDeamon()")
+	fmt.Println("Starting godo in deamon mode...")
 	arr := []string{"deamon"}
 	cmd := exec.Command(ex, arr...)
 	err := cmd.Start()
