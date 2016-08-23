@@ -4,7 +4,7 @@ package config
 import (
 	"bytes"
 	"fmt"
-	"github.com/Marneus68/godo/utils"
+	"github.com/Marneus68/utils"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -178,7 +178,8 @@ func ConfigFromFile(path string) (ret Config, err error) {
 	}
 	if p, ok := kv["port"]; ok {
 		p = strings.TrimSpace(p)
-		if utils.IsValidPortString(p) {
+		vp, _ := utils.IsValidPortString(p)
+		if vp {
 			ret.Port = p
 		} else {
 			PrintWrong(path, "port", p)
@@ -207,7 +208,8 @@ func ConfigFromFile(path string) (ret Config, err error) {
 	}
 	if wp, ok := kv["webport"]; ok {
 		wp = strings.TrimSpace(wp)
-		if utils.IsValidPortString(wp) {
+		vp, _ := utils.IsValidPortString(wp)
+		if vp {
 			ret.WebPort = wp
 		} else {
 			PrintWrong(path, "webport", wp)

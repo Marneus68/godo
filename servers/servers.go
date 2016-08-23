@@ -17,11 +17,6 @@ import (
 // Local server configuration
 var localConfig config.Config
 
-// Normalize the port string
-func NormalizePortString(port string) string {
-	return ":" + strings.TrimPrefix(port, ":")
-}
-
 // Start the godo server and writes the pid of the newly created instance
 // if pidfile isn't an empty string
 func Start(con config.Config) {

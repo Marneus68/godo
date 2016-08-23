@@ -3,7 +3,7 @@ package job
 
 import (
 	"github.com/Marneus68/godo/config"
-	"github.com/Marneus68/godo/utils"
+	"github.com/Marneus68/utils"
 	"path/filepath"
 	"strings"
 	//"os"
